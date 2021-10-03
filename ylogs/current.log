@@ -1,0 +1,2 @@
+11:21:53.793 [main] DEBUG com.cohort4.cohort4jaxrsapp.dao.UserDao - This is a DEBUG log
+11:21:53.799 [main] TRACE com.cohort4.cohort4jaxrsapp.dao.UserDao - This is a TRACE log

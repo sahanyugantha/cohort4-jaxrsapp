@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+	<Appenders>
+
+		<Console name="ConsoleX" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+
+		<File name="FileX" fileName="xlogs/app.log">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</File>
+		
+		<RollingFile name="RollingFileX" fileName="ylogs/current.log" 
+						filePattern="ylogs/%d{yyyy-MM-dd}/bak-%d{MM-dd-yyyy}-%i.log.gz">
+			<PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="2KB"/>
+			</Policies>	
+		</RollingFile>
+
+	</Appenders>
+
+
+	<Loggers>
+	
+		<Logger name="com.cohort4.cohort4jaxrsapp" level="trace">
+		
+			<AppenderRef ref="FileX" />
+			<AppenderRef ref="RollingFileX" />
+			<AppenderRef ref="ConsoleX" />
+		
+		</Logger>
+
+		<Root level="trace">
+			<AppenderRef ref="FileX" />
+			<AppenderRef ref="ConsoleX" />
+		</Root>
+
+	</Loggers>
+
+</Configuration>

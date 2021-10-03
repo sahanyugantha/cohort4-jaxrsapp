@@ -80,5 +80,9 @@ public class UserResource {
 	public String deleteItem() {
 		return "Delete a user";
 	}
+	
+	//LOG4J 
+	//LOGBACK
+	//SLF4J 
 
 }
