@@ -1,7 +1,11 @@
 package com.cohort4.cohort4jaxrsapp.dao;
 
+import com.cohort4.cohort4jaxrsapp.config.DbConnection;
 import com.cohort4.cohort4jaxrsapp.model.User;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,14 +20,15 @@ public class UserDao {
 	
 	public List<User> getAll(){
 		
-		List<User> users = fakeDbCall();
+		
+		List<User> users = getUsersFromDb();
 		
 		return users;
 	}
 	
 	public User getAUser(int id) {
 		
-		List<User> users = fakeDbCall();
+		List<User> users = getUsersFromDb();
 		
 		for (User user : users) {
 			if (user.getId() == id) {
@@ -33,19 +38,31 @@ public class UserDao {
 		return null;
 	}
 	
+	
+	
 	public int addUser(User user) {
 		
+		Connection connection = DbConnection.getInstance().getConnection();
+		
 		try {
-			if (user != null) {
-				userList.add(user);
-				return 1;
-			} else {
-				return 0;
-			}
+			
+			//Prepare SQL query.
+			String sql = "INSERT INTO `tbl_user` (`username`, `email`, `password`, `role`) "
+					+ "VALUES (?, ?, ?, ?);";
+			
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, user.getUsername());
+			stmt.setString(2, user.getEmail());
+			stmt.setString(3, user.getPassword());
+			stmt.setString(4, user.getRole());
+			
+			int response = stmt.executeUpdate();
+			
+			return response;
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.error("1032 : Error adding user | "+e.getMessage());
+			logger.error("SQL ERROR :  Could not insert data - "+e.getMessage());
 			return -1;
 		}
 	}
@@ -66,6 +83,43 @@ public class UserDao {
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	
+	
+	public List<User> getUsersFromDb(){
+	
+		List<User> userList = new ArrayList<>();
+		
+		//Create connection instance.
+		Connection conn = DbConnection.getInstance().getConnection();
+		
+		//Prepare the query.
+		String sql = "SELECT * FROM `tbl_user`;";
+		
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			
+			ResultSet resultSet = stmt.executeQuery();
+						
+			while(resultSet.next()) {
+				User user = new User();
+				user.setId(resultSet.getInt("id"));
+				user.setUsername(resultSet.getString("username"));
+				user.setEmail(resultSet.getString("email"));
+				user.setPassword(resultSet.getString("password"));
+				user.setRole(resultSet.getString("role"));
+				
+				userList.add(user);
+			}
+			
+			return userList;
+		} catch (Exception e) {
+			logger.error("DB ERROR :  Could not access data - "+e.getMessage());
+			return null;
+		}
+		
+		
+		
 	}
 	
 	
