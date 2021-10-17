@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Base64;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -41,12 +42,25 @@ public class UserTest {
 	User user = new User(6,"test@bcas.lk", "test", "123", "USER");
 	int expected = 1;
 	
-	@Test
 	public void testAddUser() {
 		UserDao userDao = new UserDao();
 		int actual = userDao.addUser(user);
 		
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testSha1Encrpt() {
+		
+		String input = "sample";
+		
+		UserDao userDao = new UserDao();
+		String actual = userDao.Sha1Encrpt(input);
+		System.out.println(actual);
+		
+		assertNotNull(actual);
+		
+		
 	}
 
 }

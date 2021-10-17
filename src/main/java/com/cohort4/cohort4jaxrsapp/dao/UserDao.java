@@ -3,10 +3,14 @@ package com.cohort4.cohort4jaxrsapp.dao;
 import com.cohort4.cohort4jaxrsapp.config.DbConnection;
 import com.cohort4.cohort4jaxrsapp.model.User;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +22,10 @@ public class UserDao {
 	
 	private List<User> userList = new ArrayList<>();
 	
+	/**
+	 * Get all the users.
+	 * @return
+	 */
 	public List<User> getAll(){
 		
 		
@@ -26,6 +34,11 @@ public class UserDao {
 		return users;
 	}
 	
+	/**
+	 * Get a user by user id.
+	 * @param id
+	 * @return
+	 */
 	public User getAUser(int id) {
 		
 		List<User> users = getUsersFromDb();
@@ -38,13 +51,68 @@ public class UserDao {
 		return null;
 	}
 	
+	/**
+	 * Login checker method.
+	 * @param email
+	 * @param password
+	 * @return
+	 */
+	public User userAuth(String email, String password) {
+		Connection connection = DbConnection.getInstance().getConnection();
+		
+		try {
+			
+			String encryptedPassword = Sha1Encrpt(password);
+			
+			//Prepare SQL query.
+			String sql = "SELECT * FROM `tbl_user` WHERE `email`=? AND `password`=?";
+			
+			PreparedStatement stmt = connection.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, encryptedPassword);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			int rows = 0;
+			User user = new User();
+			while(rs.next()) {
+				rows++;
+				user.setId(rs.getInt("id"));
+				user.setUsername(rs.getString("username"));
+				user.setEmail(rs.getString("email"));
+				user.setPassword(rs.getString("password"));
+				user.setRole(rs.getString("role"));
+			}
+			
+			if(rows == 1) {
+				return user;
+			} else {
+				return null;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+			
+		}
+		
+	}
 	
 	
+	/**
+	 * Add user into the system.
+	 * @param user
+	 * @return
+	 */
 	public int addUser(User user) {
 		
 		Connection connection = DbConnection.getInstance().getConnection();
 		
 		try {
+			
+			String password =  user.getPassword();
+			String encryptedPassword = Sha1Encrpt(password);
+			
 			
 			//Prepare SQL query.
 			String sql = "INSERT INTO `tbl_user` (`username`, `email`, `password`, `role`) "
@@ -53,11 +121,11 @@ public class UserDao {
 			PreparedStatement stmt = connection.prepareStatement(sql);
 			stmt.setString(1, user.getUsername());
 			stmt.setString(2, user.getEmail());
-			stmt.setString(3, user.getPassword());
+			stmt.setString(3, encryptedPassword);
 			stmt.setString(4, user.getRole());
 			
 			int response = stmt.executeUpdate();
-			
+			connection.close();
 			return response;
 			
 		} catch (Exception e) {
@@ -111,15 +179,33 @@ public class UserDao {
 				
 				userList.add(user);
 			}
-			
+			conn.close();
 			return userList;
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			logger.error("DB ERROR :  Could not access data - "+e.getMessage());
 			return null;
 		}
-		
-		
-		
+	}
+	
+	/**
+	 * SHA-1 encryption method
+	 * @param tobeEncrypted
+	 * @return
+	 */
+	public String Sha1Encrpt(String tobeEncrypted) {
+		try {
+			byte[] passwordArr = tobeEncrypted.getBytes(StandardCharsets.UTF_8);
+			MessageDigest sha1Encrypt = MessageDigest.getInstance("SHA-1");
+			byte[] encrptPassword = sha1Encrypt.digest(passwordArr);
+			
+			String encryptedString = Base64.getEncoder().encodeToString(encrptPassword);
+			
+			return encryptedString;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	

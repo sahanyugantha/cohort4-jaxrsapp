@@ -1,6 +1,7 @@
 package com.cohort4.cohort4jaxrsapp.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -15,7 +16,6 @@ public class UserDaoTest {
 	
 	private int expected = 3;
 	
-	@Test
 	public void testGetUsers() {
 		UserDao userDao = new UserDao();
 		List<User> users = userDao.getUsersFromDb();
@@ -28,7 +28,6 @@ public class UserDaoTest {
 	
 	 
 	
-	@Test
 	public void testAddUser() {
 		
 		int expected = 1;
@@ -45,6 +44,19 @@ public class UserDaoTest {
 				
 		assertEquals(expected, actual);
 	
+	}
+	
+	@Test
+	public void testLogin() {
+	
+		String email = "sachithra@bcas.lk";
+		String password = "123456abc";
+		
+		UserDao userDao = new UserDao();
+		User actual =  userDao.userAuth(email, password);
+		
+		assertNotNull(actual);
+		
 	}
 
 }

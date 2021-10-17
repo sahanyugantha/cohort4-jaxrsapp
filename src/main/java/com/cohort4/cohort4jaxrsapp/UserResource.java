@@ -8,7 +8,9 @@ import com.cohort4.cohort4jaxrsapp.dao.UserDao;
 import com.cohort4.cohort4jaxrsapp.model.User;
 import com.google.gson.Gson;
 
+import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -61,12 +63,113 @@ public class UserResource {
 		}
 	}
 	
-	//:TODO from here
+	@Path("/login")
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response login(String input_data) {
+		
+		Gson gson = new Gson();
+		User input_user = gson.fromJson(input_data, User.class);
+		
+		UserDao userDao = new UserDao();
+		User user = userDao.userAuth(input_user.getEmail(), input_user.getPassword());
+		
+		if(user != null) {
+			Map<String, String> msg = new HashMap<>();
+			msg.put("SUCCESS", "Successfully logged into the system");
+			String jsonString = gson.toJson(msg);
+			
+			return Response
+					.status(200)
+					.entity(jsonString)
+					.build();
+		} else {
+			Map<String, String> msg = new HashMap<>();
+			msg.put("ERROR", "please enter valid login details");
+			String jsonString = gson.toJson(msg);
+			
+			return Response
+					.status(400)
+					.entity(jsonString)
+					.build();
+		}
+		
+	}
+	
+	/*
+	@POST
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addItem(@FormParam("email") String email,
+							@FormParam("username") String username,
+							@FormParam("password") String password,
+							@FormParam("role") String role) {
+		
+		Gson gson = new Gson();
+		
+		User user = new User();
+		user.setEmail(email);
+		user.setUsername(username);
+		user.setPassword(password);
+		user.setRole(role);
+		
+		UserDao userDao = new UserDao();
+		int res = userDao.addUser(user);		
+		
+		
+		if(res > 0) {
+			Map<String, String> msg = new HashMap<>();
+			msg.put("SUCCESS", "user record has been added successfully");
+			String jsonString = gson.toJson(msg);
+			
+			return Response
+					.status(200)
+					.entity(jsonString)
+					.build();
+		} else {
+			Map<String, String> msg = new HashMap<>();
+			msg.put("ERROR", "please enter valid information");
+			String jsonString = gson.toJson(msg);
+			
+			return Response
+					.status(400)
+					.entity(jsonString)
+					.build();
+		}
+					
+	} */
 	
 	@POST
-	@Produces(MediaType.TEXT_PLAIN)
-	public String addItem() {
-		return "Add user to system";
+	@Consumes(MediaType.APPLICATION_JSON) // request data type
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response addItem(String jsonData) {
+	
+		Gson gson = new Gson();
+		User user = gson.fromJson(jsonData, User.class); // converting json string to java class.
+		
+		UserDao userDao = new UserDao();
+		int res = userDao.addUser(user);
+		
+		if(res > 0) {
+			Map<String, String> msg = new HashMap<>();
+			msg.put("SUCCESS", "user record has been added successfully");
+			String jsonString = gson.toJson(msg);
+			
+			return Response
+					.status(200)
+					.entity(jsonString)
+					.build();
+		} else {
+			Map<String, String> msg = new HashMap<>();
+			msg.put("ERROR", "please enter valid information");
+			String jsonString = gson.toJson(msg);
+			
+			return Response
+					.status(400)
+					.entity(jsonString)
+					.build();
+		}
 	}
 	
 	@PUT
