@@ -62,7 +62,7 @@ public class UserResource {
 		}
 	}
 	
-	@Path("/login")
+	@Path("/auth")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
