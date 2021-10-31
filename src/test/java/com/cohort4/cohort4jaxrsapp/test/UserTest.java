@@ -42,12 +42,12 @@ public class UserTest {
 	User user = new User(6,"test@bcas.lk", "test", "123", "USER");
 	int expected = 1;
 	
-	public void testAddUser() {
-		UserDao userDao = new UserDao();
-		int actual = userDao.addUser(user);
-		
-		assertEquals(expected, actual);
-	}
+//	public void testAddUser() {
+//		UserDao userDao = new UserDao();
+//		int actual = userDao.addUser(user);
+//		
+//		assertEquals(expected, actual);
+//	}
 	
 	@Test
 	public void testSha1Encrpt() {
