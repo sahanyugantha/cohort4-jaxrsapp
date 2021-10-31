@@ -13,7 +13,6 @@ import com.cohort4.cohort4jaxrsapp.model.User;
 public class UserDaoTest {
 	
 	
-	
 	private int expected = 3;
 	
 	public void testGetUsers() {
@@ -24,9 +23,7 @@ public class UserDaoTest {
 		assertEquals(expected, actual);
 	}
 	
-	
-	
-	 
+
 	
 	public void testAddUser() {
 		
