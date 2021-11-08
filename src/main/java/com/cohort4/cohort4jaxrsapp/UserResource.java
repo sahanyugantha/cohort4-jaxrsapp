@@ -35,7 +35,7 @@ public class UserResource {
 		return Response
 				.status(200)
 				.entity(jsonString)
-				.header("Access-Control-Allow-Origin", "*")
+				/*.header("Access-Control-Allow-Origin", "*")*/
 				.build();
 	}
 	
