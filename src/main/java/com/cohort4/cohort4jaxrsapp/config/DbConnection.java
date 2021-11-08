@@ -19,10 +19,14 @@ public class DbConnection {
 	
 	//mysql://ba30ae0e1ef3c4:ae58e4a6@us-cdbr-east-04.cleardb.com/heroku_65f96ba3e97ae85?reconnect=true
 	
-	private static final String DB_URL = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_65f96ba3e97ae85";
+	/*private static final String DB_URL = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_65f96ba3e97ae85";
 	private static final String DB_USER = "ba30ae0e1ef3c4";
-	private static final String DB_PASSWORD = "ae58e4a6";
+	private static final String DB_PASSWORD = "ae58e4a6";*/
 	
+	
+	private static final String DB_URL = "jdbc:mysql://us-cdbr-east-04.cleardb.com/heroku_5297fa71ca34055";
+	private static final String DB_USER = "b012680d2db006";
+	private static final String DB_PASSWORD = "7537c6d3";
 
 	private static DbConnection newInstance = null;
 	
